@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const app = express();
 
-const mongoDBEndpoint = 'mongodb+srv://cs5610:webdev@firstcluster.u1o1hyw.mongodb.net/?retryWrites=true&w=majority&appName=FirstCluster'
+const mongoDBEndpoint = 'mongodb+srv://cs5610:<password>@firstcluster.u1o1hyw.mongodb.net/?retryWrites=true&w=majority&appName=FirstCluster'
 mongoose.connect(mongoDBEndpoint, {
     useNewUrlParser: true,
 })
