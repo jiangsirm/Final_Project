@@ -18,4 +18,6 @@ module.exports = new Schema({
         default: Date.now,
         required: false
     }
-}, { collection : 'passwordSpr24' });
+}, { 
+    collection : 'passwordSpr24' 
+}).index({ ownerAccount: 1, passwordName: 1 }, { unique: true });

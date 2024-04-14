@@ -1,17 +1,19 @@
 const Schema = require('mongoose').Schema;
 
 module.exports = new Schema({
-    onwerAccount: {
+    ownerAccount: {
         type: String,
         required: true,
+        unique: true
     },
     sharedWithMe: {
         type: Array,
-        required: true
+        required: true,
+        default:[]
     },
     accountCreated: {
         type: Date,
         default: Date.now
     }
-}, { collection : 'passwordSpr24' });
+}, { collection : 'accountSpr24' });
 
