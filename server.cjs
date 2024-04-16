@@ -21,14 +21,20 @@ app.use(express.urlencoded({extended: true}));
 app.use('/api/password', password);
 app.use('/api/account', account);
 
-app.get('/', function(request, response){
-    response.send("Paqiuli Go!")
+
+app.get('*', function (req, res) {
+    console.log("received request");
+    res.sendFile("./index.html");
 });
 
-app.put("/", function(request, response) {
-    response.send("Put on your boots!")
-    }
-)
+// app.get('/', function(request, response){
+//     response.send("Paqiuli Go!")
+// });
+
+// app.put("/", function(request, response) {
+//     response.send("Put on your boots!")
+//     }
+// )
 
 app.listen(process.env.PORT || 8000, function(){
     console.log("deep dark fantasy");

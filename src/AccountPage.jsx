@@ -4,7 +4,7 @@ import axios from 'axios'
 function AccountPage() {
     const[passwordsState, setPasswordsState] = useState([]);
     const[sharedPasswordState, setSharedPasswordState] = useState([]);
-    const[currentOwnerState, SetCurrentOwnerState] = useState("");
+    const[currentOwnerState, SetCurrentOwnerState] = useState('');
     const[errorMsgState, setErrorMsgState] = useState('');
 
     function onSubmit(info) {
@@ -28,6 +28,9 @@ function AccountPage() {
             SetCurrentOwnerState(ownerAccount);
             setSharedPasswordState(result);
         } catch(error) {
+            setPasswordsState([])
+            setSharedPasswordState([])
+            SetCurrentOwnerState('')
             setErrorMsgState(error.response.data);
         }
     }
