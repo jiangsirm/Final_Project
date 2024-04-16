@@ -4,7 +4,7 @@ const AccountSchema = require('./account.schema.cjs');
 
 const AccountModel = model('Account', AccountSchema);
 
-function getAccount(accountId) {
+function getAccountById(accountId) {
     return AccountModel.findOne({_id: accountId}).exec();
 }
 
@@ -24,9 +24,24 @@ function addSharedAccount(sharerId, sharee) {
     )
 }
 
+function removeSharedAccount(sharerId, sharee) {
+    return AccountModel.findByIdAndUpdate(
+        sharerId, 
+        { $pull: { sharedWithMe: sharee } },
+        {new: true}
+    )
+}
+
+function deleteAccountById(id) {
+    return AccountModel.deleteOne({_id: id})
+}
+
+
 module.exports = {
-    getAccount,
+    getAccountById,
     insertAccount,
     addSharedAccount,
-    getAccountByName
+    removeSharedAccount,
+    getAccountByName,
+    deleteAccountById
 }
