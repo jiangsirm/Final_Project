@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const password = require('./backend/password.api.cjs')
 const account = require('./backend/account.api.cjs')
 
+const path = require('path');
+
 const app = express();
 
 const mongoDBEndpoint = 'mongodb+srv://cs5610:webdev@firstcluster.u1o1hyw.mongodb.net/?retryWrites=true&w=majority&appName=FirstCluster'
@@ -22,9 +24,13 @@ app.use('/api/password', password);
 app.use('/api/account', account);
 
 
+// Get the absolute path to the root folder
+const rootDir = path.resolve(__dirname);
+
+
 app.get('*', function (req, res) {
     console.log("received request");
-    res.sendFile("./index.html");
+    res.sendFile('index.html', { root: rootDir });
 });
 
 // app.get('/', function(request, response){
