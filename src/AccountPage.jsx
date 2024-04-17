@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import PasswordGenerator from "./PasswordGenerator";
 import axios from 'axios'
 
 function AccountPage() {
@@ -13,6 +14,9 @@ function AccountPage() {
     const[sharedVisibleState, setSharedVisibleState] = useState([])
 
     const[clipMessageState, setClipMessageState] = useState({message: "", index: -1, shared: undefined})
+    const[checkBoxState, setCheckBoxState] = useState({alphabet:false, numerals:false, symbols:false})
+
+    const[passwordLengthState, setPasswordLengthState] = useState(4)
 
     //function for copy to clip board
     function copyToClipBoard(shared, index) {
@@ -62,17 +66,22 @@ function AccountPage() {
             setErrorMsgState("Please enter a non-blank password name!")
             return
         }
-
+        
+        // logic for generating a password if there is none given by the user
+        let passwordCreated = undefined;
         if (isBlank(newPasswordValueState)) {
-            setErrorMsgState("Please select a non-blank password!")
-            return
+            if (Object.values(checkBoxState).every(v => v === false)) {
+                setErrorMsgState("Please enter a non-blank password Or check at least one requirment to generate password.")
+                return
+            }
+            passwordCreated = PasswordGenerator(passwordLengthState, checkBoxState);
         }
 
         try {
             const shared = await axios.post("/api/password", {
                 ownerAccount: currentOwnerState,
                 passwordName: newPasswordNameState.trim(),
-                passwordValue: newPasswordValueState.trim(),
+                passwordValue: passwordCreated ? passwordCreated : newPasswordValueState.trim(),
             });
             setNewPasswordNameState('');
             setNewPasswordValueState('')
@@ -149,6 +158,29 @@ function AccountPage() {
     function updateNewPasswordValue(event) {
         setNewPasswordValueState(event.target.value);
     }
+    
+    // function for updating checkBox
+    function updateCheckBox(fieldName, event) {
+        setCheckBoxState({
+            ...checkBoxState,
+            [fieldName]:event.target.checked
+        })
+        // console.log(event.target.checked)
+    }
+
+    // functon for updating the password length
+    function updatePasswordLength(event) {
+        const length = parseInt(event.target.value);
+        if (isNaN(length)) {
+            setPasswordLengthState(4);
+        } else if (length < 4) {
+            setPasswordLengthState(4);
+        } else if (length > 50) {
+            setPasswordLengthState(50);
+        } else {
+            setPasswordLengthState(length);
+        }
+    }
 
     // react component showing all shared passwords
     function sharedPassword() {
@@ -203,6 +235,26 @@ function AccountPage() {
         return <div className="PasswordContainer">{info}</div>
     }
 
+    function passwordCreateBar() {
+        return (
+            <div className="passWordCreationToolBar">
+                <label htmlFor="passwordName">Password Name:</label>
+                <input id="passwordName" value={newPasswordNameState} onInput={(event) => updateNewPasswordName(event)}></input>
+                <label htmlFor="passwordValue">Password:</label>
+                <input id="passwordValue" value={newPasswordValueState} onInput={(event) => updateNewPasswordValue(event)}></input>
+                <button onClick={() => onCreate()}>Create</button>
+                <label htmlFor="alphabet">alphabet</label>
+                <input type="checkbox" id="alphabet" value={checkBoxState.alphabet} onChange={(event) => updateCheckBox("alphabet", event)}></input>
+                <label htmlFor="numeral">numeral</label>
+                <input type="checkbox" id="numeral" value={checkBoxState.numerals} onInput={(event) => updateCheckBox("numerals", event)}></input>
+                <label htmlFor="symbol">symbol</label>
+                <input type="checkbox" id="symbol" value={checkBoxState.symbols} onInput={(event) => updateCheckBox("symbols", event)}></input>
+                <label htmlFor="passWordLength">length</label>
+                <input type="number" id="passWordLength" value={passwordLengthState} onChange={updatePasswordLength}></input>
+            </div>
+        )
+    }
+
     return (
         <div>
             <div>
@@ -215,13 +267,7 @@ function AccountPage() {
             <div>Shared Password</div>
             {sharedPassword()}
             <div>Add new Password: </div>
-            <div>
-                <label htmlFor="passwordName">Password Name:</label>
-                <input id="passwordName" value={newPasswordNameState} onInput={(event) => updateNewPasswordName(event)}></input>
-                <label htmlFor="passwordValue">Password:</label>
-                <input id="passwordValue" value={newPasswordValueState} onInput={(event) => updateNewPasswordValue(event)}></input>
-                <button onClick={() => onCreate()}>Create</button>
-            </div>
+            {passwordCreateBar()}
         </div>
     )
 }
