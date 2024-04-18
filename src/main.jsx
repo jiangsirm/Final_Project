@@ -4,6 +4,7 @@ import AccountPage from './AccountPage.jsx'
 import NavBar from './Navbar.jsx';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
+import Welcome from './Welcome.jsx';
 
 import {
   createBrowserRouter,
@@ -17,7 +18,7 @@ const routes = [
     children: [
       {
         path: "/",
-        element: <Login />
+        element: <Welcome />
       }
       ,
       {
