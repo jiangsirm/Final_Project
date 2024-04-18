@@ -16,6 +16,12 @@ module.exports = new Schema({
         required: true,
         default:[]
     },
+    pendingSharee: {
+        type:Array,
+        require:true,
+        default:[]
+    }
+    ,
     accountCreated: {
         type: Date,
         default: Date.now

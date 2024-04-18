@@ -32,6 +32,22 @@ function removeSharedAccount(sharer, sharee) {
     )
 }
 
+function removePendingAccount(sharer, sharee) {
+    return AccountModel.findByIdAndUpdate(
+        sharer._id, 
+        { $pull: { pendingSharee: sharee } },
+        {new: true}
+    )
+}
+
+function addPendingAccount(sharer, sharee) {
+    return AccountModel.findByIdAndUpdate(
+        sharer._id, 
+        { $push: { pendingSharee: sharee } },
+        {new: true}
+    )
+}
+
 function deleteAccountById(id) {
     return AccountModel.deleteOne({_id: id})
 }
@@ -43,5 +59,7 @@ module.exports = {
     addSharedAccount,
     removeSharedAccount,
     getAccountByName,
-    deleteAccountById
+    deleteAccountById,
+    addPendingAccount,
+    removePendingAccount
 }
