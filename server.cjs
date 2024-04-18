@@ -24,25 +24,6 @@ app.use(express.urlencoded({extended: true}));
 app.use('/api/password', password);
 app.use('/api/account', account);
 
-
-// Get the absolute path to the root folder
-// const rootDir = path.resolve(__dirname);
-
-
-// app.get('*', function (req, res) {
-//     console.log("received request");
-//     res.sendFile('index.html', { root: rootDir });
-// });
-
-// app.get('/', function(request, response){
-//     response.send("Paqiuli Go!")
-// });
-
-// app.put("/", function(request, response) {
-//     response.send("Put on your boots!")
-//     }
-// )
-
 let frontend_dir = path.join(__dirname, 'dist')
 
 app.use(express.static(frontend_dir));
