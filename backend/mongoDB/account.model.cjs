@@ -16,17 +16,17 @@ function insertAccount(account) {
     return AccountModel.create(account);
 }
 
-function addSharedAccount(sharerId, sharee) {
+function addSharedAccount(sharer, sharee) {
     return AccountModel.findByIdAndUpdate(
-        sharerId, 
+        sharer._id, 
         { $push: { sharedWithMe: sharee } },
         {new: true}
     )
 }
 
-function removeSharedAccount(sharerId, sharee) {
+function removeSharedAccount(sharer, sharee) {
     return AccountModel.findByIdAndUpdate(
-        sharerId, 
+        sharer._id, 
         { $pull: { sharedWithMe: sharee } },
         {new: true}
     )

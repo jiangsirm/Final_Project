@@ -116,6 +116,7 @@ function AccountPage() {
     async function getSharedPassword(ownerAccount) {
         try {
             const shared = await axios.get("api/account/" + ownerAccount);
+            // console.log(shared)
             let result = []
             for (let i = 0; i < shared.data.sharedWithMe.length; i++) {
                 let myPassword = await axios.get("/api/password/" + shared.data.sharedWithMe[i]);
@@ -255,6 +256,22 @@ function AccountPage() {
         )
     }
 
+    function infoBlock() {
+        if(!currentOwnerState) {
+            return <div>Loading...</div>
+        }
+        return (
+            <>
+                <div>My Password:</div>
+                {myPassword()}
+                <div>Shared Password</div>
+                {sharedPassword()}
+                <div>Add new Password: </div>
+                {passwordCreateBar()}
+            </>
+        )
+    }
+
     return (
         <div>
             <div>
@@ -262,12 +279,7 @@ function AccountPage() {
                 <button onClick={() => onSubmit()}>Submit</button>
                 <div>{errorMsgState}</div>
             </div>
-            <div>My Password:</div>
-            {myPassword()}
-            <div>Shared Password</div>
-            {sharedPassword()}
-            <div>Add new Password: </div>
-            {passwordCreateBar()}
+            {infoBlock()}
         </div>
     )
 }

@@ -6,6 +6,11 @@ module.exports = new Schema({
         required: true,
         unique: true
     },
+    ownerPassword: {
+        type:String,
+        require: true
+    }
+    ,
     sharedWithMe: {
         type: Array,
         required: true,
