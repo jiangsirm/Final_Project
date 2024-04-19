@@ -25,7 +25,7 @@ router.post('/', async function(req, res) {
         passwordValue = requestBody.passwordValue;
     }
 
-    console.log("happy" + passwordValue)
+    // console.log("happy" + passwordValue)
 
     try {
         const owner = await AccountModel.getAccountByName(requestBody.ownerAccount)
