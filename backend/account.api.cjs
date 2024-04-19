@@ -45,6 +45,72 @@ router.post('/register', async function(request, response) {
 
 });
 
+// /api/account/login
+router.post('/login', async function(request, response) {
+    const requestBody = request.body;
+    const ownerAccount = requestBody.ownerAccount;
+    const ownerPassword = requestBody.ownerPassword;
+
+    if(!ownerAccount) {
+        res.status(401);
+        return res.send("Please insert valid Inputs! ownerAccount is required");
+    }
+
+    if(!ownerPassword) {
+        res.status(401);
+        return res.send("Please insert valid Inputs! ownerPassword is required");
+    }
+
+    try {
+        const getUserResponse = await AccountModel.getAccountByName(ownerAccount);
+        if(!getUserResponse) {
+            response.status(400);
+            return response.send('No account found with name: ' + ownerAccount);
+        }
+
+        if (ownerPassword !== getUserResponse.ownerPassword) {
+            response.status(400)
+            return response.send('Passwords don\'t match.' )
+        }
+
+        const cookieData = {ownerAccount: ownerAccount};
+        
+        const token = jwt.sign(cookieData, 'OWNER_SECRET', {
+            expiresIn: '14d'
+        });
+
+        response.cookie('token', token, {httpOnly: true});
+
+        return response.send('Logged in!' )
+    } catch (error) {
+        response.status(400);
+        return response.send('Failed to login: ' + error)
+    }
+});
+
+// if loggedIn return the ownerAccount
+// api/account/loggedIn
+router.get('/loggedIn', function(request, response) {
+    const ownerAccount = cookieHelper.cookieDecryptor(request);
+
+    if(ownerAccount) {
+        return response.send({
+            ownerAccount: ownerAccount,
+        });
+    } else {
+        response.status(400);
+        return response.send('Not logged in');
+    }
+})
+
+// api/account/logout
+router.post('/logout', function(request, response) {
+
+    response.clearCookie('ownerAccount');
+    return response.send('Logged out');
+});
+
+// account inserter for testing
 // /api/account
 router.post('/', async function(req, res) {
     const requestBody = req.body;
