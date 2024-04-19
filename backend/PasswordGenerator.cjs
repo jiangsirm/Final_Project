@@ -1,4 +1,10 @@
-export default function PasswordGenerator(length, requirement) {
+const crypto = require('node:crypto')
+const util = require('util')
+
+let randomInt = util.promisify(crypto.randomInt)
+
+async function PasswordGenerator(length, requirement) {
+
     const characterSet = {
         alphabet: "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
         numerals: "0123456789",
@@ -15,9 +21,13 @@ export default function PasswordGenerator(length, requirement) {
     
     let password = "";
     for (let i = 0; i < length; i++) {
-        password += characterPool[Math.floor(Math.random() * characterPool.length)];
+        password += characterPool[await randomInt(0, characterPool.length)];
     }
     // console.log(password)
 
     return password
+}
+
+module.exports = {
+    PasswordGenerator
 }

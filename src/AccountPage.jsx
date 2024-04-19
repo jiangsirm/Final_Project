@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import PasswordGenerator from "./PasswordGenerator";
 import axios from 'axios'
 
 function AccountPage() {
     const[passwordsState, setPasswordsState] = useState([]);
     const[sharedPasswordState, setSharedPasswordState] = useState([]);
     const[currentOwnerState, setCurrentOwnerState] = useState('');
+
     const[newPasswordNameState, setNewPasswordNameState] = useState('');
     const[newPasswordValueState, setNewPasswordValueState] = useState('');
     const[errorMsgState, setErrorMsgState] = useState('');
@@ -66,22 +66,14 @@ function AccountPage() {
             setErrorMsgState("Please enter a non-blank password name!")
             return
         }
-        
-        // logic for generating a password if there is none given by the user
-        let passwordCreated = undefined;
-        if (isBlank(newPasswordValueState)) {
-            if (Object.values(checkBoxState).every(v => v === false)) {
-                setErrorMsgState("Please enter a non-blank password Or check at least one requirment to generate password.")
-                return
-            }
-            passwordCreated = PasswordGenerator(passwordLengthState, checkBoxState);
-        }
 
         try {
             const shared = await axios.post("/api/password", {
                 ownerAccount: currentOwnerState,
                 passwordName: newPasswordNameState.trim(),
-                passwordValue: passwordCreated ? passwordCreated : newPasswordValueState.trim(),
+                passwordValue: newPasswordValueState.trim(),
+                requirements: checkBoxState,
+                length:passwordLengthState
             });
             setNewPasswordNameState('');
             setNewPasswordValueState('')
@@ -257,9 +249,6 @@ function AccountPage() {
     }
 
     function infoBlock() {
-        if(!currentOwnerState) {
-            return <div>Loading...</div>
-        }
         return (
             <>
                 <div>My Password:</div>

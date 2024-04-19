@@ -1,6 +1,49 @@
 const express = require('express');
 const router = express.Router();
 const AccountModel = require('./mongoDB/account.model.cjs');
+const cookieHelper = require('./cookie.helper.cjs');
+const jwt = require('jsonwebtoken');
+
+// /api/account/register
+router.post('/register', async function(request, response) {
+    const requestBody = request.body;
+
+    const ownerAccount = requestBody.ownerAccount;
+    const ownerPassword = requestBody.ownerPassword;
+
+    if(!ownerAccount) {
+        res.status(401);
+        return res.send("Please insert valid Inputs! ownerAccount is required");
+    }
+
+    if(!ownerPassword) {
+        res.status(401);
+        return res.send("Please insert valid Inputs! ownerPassword is required");
+    }
+
+    const newUser = {
+        ownerAccount: ownerAccount,
+        ownerPassword: ownerPassword
+    };
+
+    try {
+        const createUserResponse = await userModel.insertUser(newUser);
+
+        const cookieData = {username: username};
+        
+        const token = jwt.sign(cookieData, 'POKEMON_SECRET', {
+            expiresIn: '14d'
+        });
+
+        response.cookie('token', token, {httpOnly: true});
+
+        return response.send('User with username ' + username + ' created.' )
+    } catch (error) {
+        response.status(400);
+        return response.send('Failed to create user with message ' + error)
+    }
+
+});
 
 // /api/account
 router.post('/', async function(req, res) {
