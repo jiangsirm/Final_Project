@@ -21,26 +21,26 @@ router.post('/register', async function(request, response) {
         return res.send("Please insert valid Inputs! ownerPassword is required");
     }
 
-    const newUser = {
+    const newAccount = {
         ownerAccount: ownerAccount,
         ownerPassword: ownerPassword
     };
 
     try {
-        const createUserResponse = await userModel.insertUser(newUser);
+        const createUserResponse = await AccountModel.insertAccount(newAccount);
 
-        const cookieData = {username: username};
+        const cookieData = {ownerAccount: ownerAccount};
         
-        const token = jwt.sign(cookieData, 'POKEMON_SECRET', {
+        const token = jwt.sign(cookieData, 'OWNER_SECRET', {
             expiresIn: '14d'
         });
 
         response.cookie('token', token, {httpOnly: true});
 
-        return response.send('User with username ' + username + ' created.' )
+        return response.send('account named ' + ownerAccount + ' is created.' )
     } catch (error) {
         response.status(400);
-        return response.send('Failed to create user with message ' + error)
+        return response.send('Failed to create account: ' + error)
     }
 
 });
