@@ -13,28 +13,44 @@ function Login() {
     const [errorMsgState, setErrorMsgState] = useState('');
     const [passwordVisibleState, setPasswordVisibleState] = useState(false)
 
+    // utility function for checking blank input
+    function isBlank(str) {
+        return !str || /^\s*&/.test(str);
+    }
+
     async function onSubmit() {
         setErrorMsgState('');
+        if (isBlank(passwordState)) {
+            setErrorMsgState("password should not be Blank!");
+            return
+        }
+
+        if (isBlank(accountState)) {
+            setErrorMsgState("Account name should not be Blank!");
+            return
+        }
+
         try {
-          await axios.post('/api/account/login', {
-            ownerAccount: accountState,
-            ownerPassword: passwordState
-          });
-          
-          // jump to account after submit
-          navigate('/account');
-          setLoginTrue()
+            await axios.post('/api/account/login', {
+                ownerAccount: accountState,
+                ownerPassword: passwordState
+            });
+            
+            // jump to account after submit
+            navigate('/account');
+            setLoginTrue()
         } catch (error) {
             setErrorMsgState(error.response.data);
+            setLoginFalse()
         }
     }
 
     function updateAccount(event) {
-        setAccountState(event.target.value);
+        setAccountState(event.target.value.replace(/\s/g, ''));
     }
 
     function updatePassword(event) {
-        setPasswordState(event.target.value);
+        setPasswordState(event.target.value.replace(/\s/g, ''));
     }
 
     function changeVisibility() {
@@ -43,7 +59,7 @@ function Login() {
 
     return(
         <div>
-            This is the Login Page. Alex will change it later. Josh Here.
+            <span>This is the Login Page. Alex will change it later. Josh Here.</span>
             <div>
                 <h1>Login Page</h1>
                 {errorMsgState && <h1> {errorMsgState} </h1>}

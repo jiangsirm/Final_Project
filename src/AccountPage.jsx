@@ -98,7 +98,7 @@ function AccountPage() {
     // function for selecting a Account
     function onSubmit() {
         if (isBlank(currentOwnerState)) {
-            setErrorMsgState("The input for account name should not be blank")
+            setErrorMsgState("You are not logged in yet!")
             return
         }
         getSharedPassword(currentOwnerState.trim())
@@ -159,19 +159,14 @@ function AccountPage() {
         }
     }
 
-    // function for update field of owner
-    function updateOwnerName(event) {
-        setCurrentOwnerState(event.target.value);
-    }
-
     // function for update field of password name
     function updateNewPasswordName(event) {
-        setNewPasswordNameState(event.target.value);
+        setNewPasswordNameState(event.target.value.replace(/\s/g, ''));
     }
 
     // function for update field of password value
     function updateNewPasswordValue(event) {
-        setNewPasswordValueState(event.target.value);
+        setNewPasswordValueState(event.target.value.replace(/\s/g, ''));
     }
     
     // function for updating checkBox
