@@ -8,8 +8,9 @@ const PasswordGenerator = require('./PasswordGenerator.cjs')
 // /api/password
 router.post('/', async function(req, res) {
     const requestBody = req.body;
+    const ownerAccount = cookieHelper.cookieDecryptor(req)
 
-    if(!requestBody.ownerAccount || !requestBody.passwordName) {
+    if(!ownerAccount || !requestBody.passwordName) {
         res.status(401);
         return res.send("Please insert valid Inputs! ownerAccount, passwordName");
     }
@@ -28,7 +29,7 @@ router.post('/', async function(req, res) {
     // console.log("happy" + passwordValue)
 
     try {
-        const owner = await AccountModel.getAccountByName(requestBody.ownerAccount)
+        const owner = await AccountModel.getAccountByName(ownerAccount)
         if (!owner) {
             res.status(401);
             return res.send("There is no such account name");
@@ -40,7 +41,7 @@ router.post('/', async function(req, res) {
     }
 
     const newPassword = {
-        ownerAccount: requestBody.ownerAccount,
+        ownerAccount: ownerAccount,
         passwordName: requestBody.passwordName,
         passwordValue: passwordValue,
     }
@@ -65,7 +66,24 @@ router.put('/:id', async function(req, res) {
         return res.send("You need to include ownerAccount, passwordName, and passwordValue in your request");
     }
 
+    // utility function for checking blank input
+    function isBlank(str) {
+        return !str || /^\s*&/.test(str);
+    }
+
+    if(isBlank(requestBody.ownerAccount) || isBlank(requestBody.passwordName) ||isBlank(requestBody.passwordValue)) {
+        res.status(400);
+        return res.send("Neith ownerAccount, passwordName, passwordValue should be blank");
+    }
+
     try {
+        const owner = cookieHelper.cookieDecryptor(req);
+        const password = await PasswordModel.getPasswordById(passwordId);
+        if (password !== null && password.ownerAccount !== owner) {
+            res.status(400);
+            return res.send("This is not your Password");
+        }
+
         const passwordUpdateResponse = await PasswordModel.updatePassword(passwordId, requestBody);
         return res.send('Successfully updated password ID: ' + passwordId)
     } catch (error) {
@@ -74,14 +92,37 @@ router.put('/:id', async function(req, res) {
     }
 })
 
-
 // -> api/password/accountname => req.params.ownerAccount === accountname
 router.get('/:accountName', async function(req, res) {
     const ownerAccount = req.params.accountName;
+    try {
+        const curAccount = cookieHelper.cookieDecryptor(req);
+        const owner = await AccountModel.getAccountByName(curAccount)
+
+        if (!owner.sharedWithMe.includes(ownerAccount)) {
+            res.status(401)
+            return res.send("This account have not shared password with you")
+        }
+    } catch(e) {
+        res.status(400)
+        return res.send(e.message)
+    }
 
     try {
         const getPokemonResponse = await PasswordModel.getPasswordByAccount(ownerAccount);
         return res.send(getPokemonResponse);
+    } catch (error) {
+        res.status(400);
+        return res.send(error.message);
+    }
+})
+
+// -> api/password/(when logged in) will return the ownerAccount of the logged in user
+router.get('/', async function(req, res) {
+    try {
+        const ownerAccount = cookieHelper.cookieDecryptor(req);
+        const getResponse = await PasswordModel.getPasswordByAccount(ownerAccount);
+        return res.send(getResponse);
     } catch (error) {
         res.status(400);
         return res.send(error.message);
@@ -93,8 +134,15 @@ router.delete('/:passwordId', async function(req, res) {
     const passwordId = req.params.passwordId;
 
     try {
-        const deletePokemonResponse = await PasswordModel.deletePasswordById(passwordId);
-        return res.send(deletePokemonResponse);
+        const ownerAccount = cookieHelper.cookieDecryptor(req);
+        const curPassword = await PasswordModel.getPasswordById(passwordId);
+        if (ownerAccount !== curPassword.ownerAccount) {
+            res.status(400);
+            return res.send("You can only delete your own password!");
+        }
+
+        const deleteResponse = await PasswordModel.deletePasswordById(passwordId);
+        return res.send(deleteResponse);
     } catch (error) {
         res.status(400);
         return res.send(error.message);

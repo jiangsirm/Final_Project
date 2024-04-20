@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 function cookieDecryptor(request) {
+    // console.log(request.cookies)
     const token = request.cookies.token;  
     if (!token) {
         return false;

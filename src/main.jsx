@@ -5,6 +5,7 @@ import NavBar from './Navbar.jsx';
 import Login from './Login.jsx';
 import Register from './Register.jsx';
 import Welcome from './Welcome.jsx';
+import LoginProvider from './LoginProvider.jsx';
 
 import {
   createBrowserRouter,
@@ -42,6 +43,8 @@ const router = createBrowserRouter(routes)
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router}/>
+    <LoginProvider>
+      <RouterProvider router={router}/>
+    </LoginProvider>
   </React.StrictMode>,
 )

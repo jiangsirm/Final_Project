@@ -105,8 +105,7 @@ router.get('/loggedIn', function(request, response) {
 
 // api/account/logout
 router.post('/logout', function(request, response) {
-
-    response.clearCookie('ownerAccount');
+    response.clearCookie('token');
     return response.send('Logged out');
 });
 
@@ -146,7 +145,20 @@ router.put('/', async function(req, res) {
     const shareeName = req.body.sharee;
     const action = req.body.action;
     let sharer = null;
-    let sharee = null
+    let sharee = null;
+    let curAccount;
+
+    try {
+        curAccount = cookieHelper.cookieDecryptor(req)
+    } catch(error) {
+        res.status(401)
+        return res.send(error.message)
+    }
+
+    if (!curAccount) {
+        res.status(401);
+        return res.send("You are not logged in yet!");
+    }
 
     if(!shareeName) {
         res.status(401);
@@ -156,6 +168,11 @@ router.put('/', async function(req, res) {
     if(!sharerName) {
         res.status(401);
         return res.send("Please insert valid Inputs! sharer is required");
+    }
+
+    if (shareeName === sharerName) {
+        res.status(401);
+        return res.send("You cannot share password with yourself");
     }
 
     if (!action) {
@@ -168,22 +185,26 @@ router.put('/', async function(req, res) {
         return res.send("Please insert valid Inputs! Action must be either 'add' or 'remove'.");
     }
 
+    if (curAccount !== sharerName) {
+        res.status(401);
+        return res.send("You can only manage your own sharedWithMe list! Sharer must be yourself, i.e. same as your ownerAccount");
+    }
+
     try {
-        sharer = await AccountModel.getAccountByName(sharerName);
-        sharee = await AccountModel.getAccountByName(shareeName);
+        const sharer = await AccountModel.getAccountByName(sharerName);
+        const sharee = await AccountModel.getAccountByName(shareeName);
+        if (!sharer) {
+            res.status(401);
+            return res.send("Please insert valid Inputs! There is no such sharer");
+        }
+    
+        if (!sharee) {
+            res.status(401);
+            return res.send("Please insert valid Inputs! There is no such sharee");
+        }
     } catch (error) {
         res.status(400);
         return res.send(error.message);
-    }
-
-    if (!sharer) {
-        res.status(401);
-        return res.send("Please insert valid Inputs! There is no such sharer");
-    }
-
-    if (!sharee) {
-        res.status(401);
-        return res.send("Please insert valid Inputs! There is no such sharee");
     }
 
     if (action === "add") {
@@ -215,7 +236,20 @@ router.put('/pending', async function(req, res) {
     const shareeName = req.body.sharee;
     const action = req.body.action;
     let sharer = null;
-    let sharee = null
+    let sharee = null;
+    let curAccount;
+
+    try {
+        curAccount = cookieHelper.cookieDecryptor(req)
+    } catch(error) {
+        res.status(401)
+        return res.send(error.message)
+    }
+
+    if (!curAccount) {
+        res.status(401);
+        return res.send("You are not logged in yet!");
+    }
 
     if(!shareeName) {
         res.status(401);
@@ -225,6 +259,11 @@ router.put('/pending', async function(req, res) {
     if(!sharerName) {
         res.status(401);
         return res.send("Please insert valid Inputs! sharer is required");
+    }
+
+    if (shareeName === sharerName) {
+        res.status(401);
+        return res.send("You cannot share password with yourself");
     }
 
     if (!action) {
@@ -260,10 +299,20 @@ router.put('/pending', async function(req, res) {
             res.status(401);
             return res.send("This sharee already sent the request!")
         }
+
+        if (curAccount !== shareeName) {
+            res.status(401);
+            return res.send("You add yourself to others' pendingSharee! Sharee must be yourself, i.e. same as your ownerAccount");
+        }
     } else {
         if (!sharer.pendingSharee.includes(shareeName)) {
             res.status(401);
             return res.send("This sharee have not sent the request!")
+        }
+
+        if (curAccount !== sharerName) {
+            res.status(401);
+            return res.send("You can only remove from your own pendingSharee! Sharer must be yourself, i.e. same as your ownerAccount");
         }
     }
 
@@ -282,6 +331,18 @@ router.get('/:accountName', async function(req, res) {
     const ownerAccount = req.params.accountName;
 
     try {
+        const getAccountResponse = await AccountModel.getAccountByName(ownerAccount);
+        return res.send(getAccountResponse);
+    } catch (error) {
+        res.status(400);
+        return res.send(error.message);
+    }
+})
+
+// api/account
+router.get('/', async function(req, res) {
+    try {
+        const ownerAccount = cookieHelper.cookieDecryptor(req)
         const getAccountResponse = await AccountModel.getAccountByName(ownerAccount);
         return res.send(getAccountResponse);
     } catch (error) {

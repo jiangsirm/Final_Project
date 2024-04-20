@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const password = require('./backend/password.api.cjs')
 const account = require('./backend/account.api.cjs')
 const path = require('path')
+const cookieParser = require('cookie-parser')
 
 // const path = require('path');
 
@@ -18,6 +19,7 @@ const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'Error connecting to MongoDB:'));
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 

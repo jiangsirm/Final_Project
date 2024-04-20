@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from 'react-router';
 import axios from 'axios'
 
 function AccountPage() {
+    const navigate = useNavigate()
     const[passwordsState, setPasswordsState] = useState([]);
     const[sharedPasswordState, setSharedPasswordState] = useState([]);
     const[currentOwnerState, setCurrentOwnerState] = useState('');
@@ -104,32 +106,52 @@ function AccountPage() {
         setErrorMsgState('')
     }
 
-    // make api call to both Account api and Password Api to get a full list of shared password
-    async function getSharedPassword(ownerAccount) {
+    // function for rendering the page when logged in
+    function onStart() {
+        isLoggedIn()
+            .then(() => {
+                getSharedPassword(currentOwnerState.trim())
+                getMyPassword(currentOwnerState.trim())
+                setErrorMsgState('')
+            })
+    }
+
+    async function isLoggedIn() {
         try {
-            const shared = await axios.get("api/account/" + ownerAccount);
-            // console.log(shared)
+          const response = await axios.get('/api/account/loggedIn');
+          const ownerAccount = response.data.ownerAccount;
+          setCurrentOwnerState(ownerAccount);
+        } catch (e) {
+          navigate('/')
+        }
+    }
+
+    // make api call to both Account api and Password Api to get a full list of shared password
+    async function getSharedPassword() {
+        try {
+            const shared = await axios.get("api/account/" + currentOwnerState);
+            console.log(shared)
             let result = []
             for (let i = 0; i < shared.data.sharedWithMe.length; i++) {
                 let myPassword = await axios.get("/api/password/" + shared.data.sharedWithMe[i]);
                 result = result.concat(myPassword.data);
             }
-            setCurrentOwnerState(ownerAccount);
+            // setCurrentOwnerState(ownerAccount);
             setSharedPasswordState(result);
             setSharedVisibleState(new Array(result.length).fill("password"))
         } catch(error) {
-            setPasswordsState([])
+            // setPasswordsState([])
             setSharedPasswordState([])
-            setCurrentOwnerState('')
-            setErrorMsgState(error.response.data);
+            // setCurrentOwnerState('')
+            setErrorMsgState("When retriving shared account: " + error.message);
         }
     }
 
     // make an api call to get one's own passwords
-    async function getMyPassword(ownerAccount) {
+    async function getMyPassword() {
         try {
-            const myPassword = await axios.get("/api/password/" + ownerAccount);
-            setCurrentOwnerState(ownerAccount);
+            const myPassword = await axios.get("/api/password/");
+            // setCurrentOwnerState(ownerAccount);
             setPasswordsState(myPassword.data);
             setPasswordVisibleState(new Array(myPassword.data.length).fill("password"))
         } catch(error) {
@@ -261,11 +283,11 @@ function AccountPage() {
         )
     }
 
+    useEffect(onStart, []);
+
     return (
         <div>
             <div>
-                <label htmlFor="ownerInput">Account Name:</label><input id="ownerInput" value={currentOwnerState} onInput={(event) => updateOwnerName(event)}></input>
-                <button onClick={() => onSubmit()}>Submit</button>
                 <div>{errorMsgState}</div>
             </div>
             {infoBlock()}
