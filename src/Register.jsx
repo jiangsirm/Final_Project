@@ -6,7 +6,7 @@ import { LogInContext } from './LoginProvider';
 function Register() {
     const navigate = useNavigate()
 
-    const [login, setLoginTrue, setLoginFalse] = useContext(LogInContext)
+    const {login, setLoginTrue, setLoginFalse, setNavAccountState} = useContext(LogInContext)
 
     const [accountState, setAccountState] = useState('');
     const [passwordState, setPasswordState] = useState('');
@@ -48,6 +48,7 @@ function Register() {
             // jump to account after submit
             navigate('/account');
             setLoginTrue()
+            setNavAccountState(accountState)
         } catch (error) {
             setErrorMsgState(error.response.data);
             setLoginFalse()

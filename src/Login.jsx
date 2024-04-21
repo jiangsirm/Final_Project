@@ -1,12 +1,12 @@
 import axios from 'axios';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { LogInContext } from './LoginProvider';
 
 function Login() {
     const navigate = useNavigate()
 
-    const [login, setLoginTrue, setLoginFalse] = useContext(LogInContext)
+    const {login, setLoginTrue, setLoginFalse, setNavAccountState} = useContext(LogInContext)
 
     const [accountState, setAccountState] = useState('');
     const [passwordState, setPasswordState] = useState('');
@@ -39,6 +39,8 @@ function Login() {
             // jump to account after submit
             navigate('/account');
             setLoginTrue()
+            setNavAccountState(accountState)
+
         } catch (error) {
             setErrorMsgState(error.response.data);
             setLoginFalse()
@@ -56,6 +58,12 @@ function Login() {
     function changeVisibility() {
         setPasswordVisibleState(!passwordVisibleState)
     }
+
+    useEffect(() => {
+        if (login.loginState) {
+            navigate('/account');
+        }
+    }, [])
 
     return(
         <div>

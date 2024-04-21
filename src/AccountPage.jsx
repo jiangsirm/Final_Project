@@ -3,22 +3,39 @@ import { useNavigate } from 'react-router';
 import axios from 'axios'
 
 function AccountPage() {
+    // states for currentOwner, password of the owner and the shared passwords
     const navigate = useNavigate()
     const[passwordsState, setPasswordsState] = useState([]);
     const[sharedPasswordState, setSharedPasswordState] = useState([]);
     const[currentOwnerState, setCurrentOwnerState] = useState('');
 
+    // states for inputs for password creation, check box, and password length
     const[newPasswordNameState, setNewPasswordNameState] = useState('');
     const[newPasswordValueState, setNewPasswordValueState] = useState('');
-    const[errorMsgState, setErrorMsgState] = useState('');
+    const[passwordLengthState, setPasswordLengthState] = useState(4)
+    const[checkBoxState, setCheckBoxState] = useState({alphabet:false, numerals:false, symbols:false})
 
+    // states for visibility of passwords
     const[passwordVisibleState, setPasswordVisibleState] = useState([])
     const[sharedVisibleState, setSharedVisibleState] = useState([])
 
-    const[clipMessageState, setClipMessageState] = useState({message: "", index: -1, shared: undefined})
-    const[checkBoxState, setCheckBoxState] = useState({alphabet:false, numerals:false, symbols:false})
+    // states for editing existing password
+    const[editState, setEditState] = useState(-1)
+    const[editContentState, setEditContentState] = useState({
+        passwordId: '',
+        passwordName: '',
+        passwordValue: ''
+    })
 
-    const[passwordLengthState, setPasswordLengthState] = useState(4)
+    // states for display pending users 
+    const [pendingState, setPendingState] = useState([])
+
+    // states for displaying "copied" for copying to clip
+    const[clipMessageState, setClipMessageState] = useState({message: "", index: -1, shared: undefined})
+
+    // states for error message
+    const[errorMsgState, setErrorMsgState] = useState('');
+
 
     //function for copy to clip board
     function copyToClipBoard(shared, index) {
@@ -95,7 +112,47 @@ function AccountPage() {
         }
     }
 
-    // function for selecting a Account
+    // function for set editing bar state
+    async function onEdit(passwordId, index) {
+        // console.log(pendingState)
+        if (editState !== -1 && editState === index) {
+            setEditState(-1)
+            setEditContentState ({
+                passwordId: '',
+                passwordName: '',
+                passwordValue: ''
+            })
+        } else {
+            setEditState(index)
+            setEditContentState ({
+                passwordId: passwordId,
+                passwordName: passwordsState[index].passwordName,
+                passwordValue: passwordsState[index].passwordValue
+            })
+        }
+    }
+
+    // function for update/editing password
+    async function onUpdate(passwordId) {
+        try {
+            await axios.put('/api/password/' + passwordId, {
+                ownerAccount: currentOwnerState,
+                passwordName: editContentState.passwordName,
+                passwordValue: editContentState.passwordValue
+            })
+            setEditState(-1)
+            setEditContentState ({
+                passwordId: '',
+                passwordName: '',
+                passwordValue: ''
+            })
+            onSubmit(currentOwnerState)
+        } catch(error) {
+            setErrorMsgState(error.response.data);
+        }
+    }
+
+    // function for rendering the account page
     function onSubmit() {
         if (isBlank(currentOwnerState)) {
             setErrorMsgState("You are not logged in yet!")
@@ -103,19 +160,22 @@ function AccountPage() {
         }
         getSharedPassword(currentOwnerState.trim())
         getMyPassword(currentOwnerState.trim())
+        getPendingList()
         setErrorMsgState('')
     }
 
-    // function for rendering the page when logged in
+    // function for rendering the page on logged in
     function onStart() {
         isLoggedIn()
             .then(() => {
                 getSharedPassword(currentOwnerState.trim())
                 getMyPassword(currentOwnerState.trim())
+                getPendingList()
                 setErrorMsgState('')
             })
     }
 
+    // function used together with above function to log in
     async function isLoggedIn() {
         try {
           const response = await axios.get('/api/account/loggedIn');
@@ -126,23 +186,33 @@ function AccountPage() {
         }
     }
 
+    // function to getting pending requests
+    async function getPendingList() {
+        try {
+            const response = await axios.get("api/account/" + currentOwnerState)
+            // console.log(response.data.pendingSharee)
+            setPendingState([...response.data.pendingSharee])
+            
+        } catch(error) {
+            setErrorMsgState(error.message)
+        }
+    }
+
     // make api call to both Account api and Password Api to get a full list of shared password
     async function getSharedPassword() {
         try {
             const shared = await axios.get("api/account/" + currentOwnerState);
-            console.log(shared)
+            // console.log(shared)
             let result = []
             for (let i = 0; i < shared.data.sharedWithMe.length; i++) {
                 let myPassword = await axios.get("/api/password/" + shared.data.sharedWithMe[i]);
                 result = result.concat(myPassword.data);
             }
-            // setCurrentOwnerState(ownerAccount);
+
             setSharedPasswordState(result);
             setSharedVisibleState(new Array(result.length).fill("password"))
         } catch(error) {
-            // setPasswordsState([])
             setSharedPasswordState([])
-            // setCurrentOwnerState('')
             setErrorMsgState("When retriving shared account: " + error.message);
         }
     }
@@ -192,6 +262,31 @@ function AccountPage() {
         }
     }
 
+    // function for updating checkBox
+    function updateEditContent(fieldName, event) {
+        setEditContentState({
+            ...editContentState,
+            [fieldName]:event.target.value
+        })
+        // console.log(event.target.value)
+    }
+
+    // react component shoing all pending Sharers
+    function pendingSharer() {
+        let info = []
+        info.push(<div key={-1}>User</div>)
+        for(let i = 0; i < pendingState.length; i++) {
+            info.push(
+                <div className="PendingSharerRowContainer" key={i}>
+                    {pendingState[i] + " would like to share password"}
+                    <button onClick={() =>{}}>Accept</button>
+                    <button onClick={() =>{}}>Decline</button>
+                </div>
+            )
+        }
+        return <div className="PendingSharerContainer">{info}</div>
+    }
+
     // react component showing all shared passwords
     function sharedPassword() {
         let info = []
@@ -218,6 +313,19 @@ function AccountPage() {
         return <div className="SharedPasswordContainer">{info}</div>
     }
 
+    // react component for edit tool bar
+    function editBar() {
+        return (
+            <div>
+                Edit Bar:&nbsp;
+                <label htmlFor="passwordNameEdit">Password Name:</label>
+                <input id="passwordNameEdit" value={editContentState.passwordName} onInput={(event) => updateEditContent('passwordName',event)}></input>
+                <label htmlFor="passwordValueEdit">Password:</label>
+                <input id="passwordValueEdit" value={editContentState.passwordValue} onInput={(event) => updateEditContent('passwordValue', event)}></input>
+                <button onClick={() => onUpdate(editContentState.passwordId)}>Update</button>
+            </div>
+        )
+    }
 
     // react component showing all passwords of an account owner
     function myPassword() {
@@ -238,13 +346,16 @@ function AccountPage() {
                     created.getSeconds().toString()}
                     <button onClick={() => copyToClipBoard(false, i)}>Copy</button>
                     <button onClick={() => onDelete(passwordsState[i]._id)}>Delete</button>
+                    <button onClick={() => onEdit(passwordsState[i]._id, i)}>Edit</button>
                     {clipMessageState.index === i && clipMessageState.shared === false ? clipMessageState.message: ""}
+                    {editState === i ? editBar(): ""}                   
                 </div>
             )
         }
         return <div className="PasswordContainer">{info}</div>
     }
 
+    // component for password creation bar 
     function passwordCreateBar() {
         return (
             <div className="passWordCreationToolBar">
@@ -265,9 +376,12 @@ function AccountPage() {
         )
     }
 
+    // component for integrated block
     function infoBlock() {
         return (
-            <>
+            <>  
+                <div>Pending Request:</div>
+                {pendingSharer()}
                 <div>My Password:</div>
                 {myPassword()}
                 <div>Shared Password</div>

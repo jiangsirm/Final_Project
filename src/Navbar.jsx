@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router';
 import { LogInContext } from './LoginProvider';
 
 function NavBar() {
-    const [login, setLoginTrue, setLoginFalse] = useContext(LogInContext)
+    const {login, setLoginTrue, setLoginFalse, setNavAccountState, resetAccountState} = useContext(LogInContext)
     
     const navigate = useNavigate()
 
@@ -13,6 +13,7 @@ function NavBar() {
         try {
             const response = await axios.post("api/account/logout")
             setLoginFalse()
+            resetAccountState()
             navigate('/login')
         } catch(error) {
             navigate('/welcome')
@@ -21,8 +22,8 @@ function NavBar() {
     }
     
     function NavBarContent() {
-        if (login) {
-            return <span><button onClick={() => logginOut()}>Logout</button></span>
+        if (login.loginState) {
+            return <span>{"Hello " + login.accountState + " !"}<button onClick={() => logginOut()}>Logout</button></span>
         } else {
             return (
                 <span>
@@ -36,7 +37,7 @@ function NavBar() {
     return (
         <>
             <div>
-                Here should be a NavBar
+                Here should be a NavBar &nbsp;
                 {NavBarContent()}
             </div>
             <Outlet/>
