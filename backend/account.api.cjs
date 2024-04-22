@@ -139,14 +139,14 @@ router.post('/', async function(req, res) {
 })
 
 // api call for add/remove String from sharedWithMe Array
-//api/account/
-router.put('/', async function(req, res) {
+//api/account/shared
+router.put('/shared', async function(req, res) {
     const sharerName = req.body.sharer;
     const shareeName = req.body.sharee;
     const action = req.body.action;
     let sharer = null;
     let sharee = null;
-    let curAccount;
+    let curAccount = null;
 
     try {
         curAccount = cookieHelper.cookieDecryptor(req)
@@ -191,20 +191,22 @@ router.put('/', async function(req, res) {
     }
 
     try {
-        const sharer = await AccountModel.getAccountByName(sharerName);
-        const sharee = await AccountModel.getAccountByName(shareeName);
-        if (!sharer) {
-            res.status(401);
-            return res.send("Please insert valid Inputs! There is no such sharer");
-        }
-    
-        if (!sharee) {
-            res.status(401);
-            return res.send("Please insert valid Inputs! There is no such sharee");
-        }
+        sharer = await AccountModel.getAccountByName(sharerName);
+        sharee = await AccountModel.getAccountByName(shareeName);
+
     } catch (error) {
         res.status(400);
         return res.send(error.message);
+    }
+
+    if (!sharer) {
+        res.status(401);
+        return res.send("Please insert valid Inputs! There is no such sharer");
+    }
+
+    if (!sharee) {
+        res.status(401);
+        return res.send("Please insert valid Inputs! There is no such sharee");
     }
 
     if (action === "add") {
@@ -279,19 +281,18 @@ router.put('/pending', async function(req, res) {
     try {
         sharer = await AccountModel.getAccountByName(sharerName);
         sharee = await AccountModel.getAccountByName(shareeName);
+        if (!sharer) {
+            res.status(401);
+            return res.send("Please insert valid Inputs! There is no such sharer");
+        }
+    
+        if (!sharee) {
+            res.status(401);
+            return res.send("Please insert valid Inputs! There is no such sharee");
+        }
     } catch (error) {
         res.status(400);
         return res.send(error.message);
-    }
-
-    if (!sharer) {
-        res.status(401);
-        return res.send("Please insert valid Inputs! There is no such sharer");
-    }
-
-    if (!sharee) {
-        res.status(401);
-        return res.send("Please insert valid Inputs! There is no such sharee");
     }
 
     if (action === "add") {
@@ -300,9 +301,14 @@ router.put('/pending', async function(req, res) {
             return res.send("This sharee already sent the request!")
         }
 
+        if (sharer.sharedWithMe.includes(shareeName)) {
+            res.status(401);
+            return res.send("This sharee already have the access!")
+        }
+
         if (curAccount !== shareeName) {
             res.status(401);
-            return res.send("You add yourself to others' pendingSharee! Sharee must be yourself, i.e. same as your ownerAccount");
+            return res.send("You can only add yourself to others' pendingSharee! Sharee must be yourself, i.e. same as your ownerAccount");
         }
     } else {
         if (!sharer.pendingSharee.includes(shareeName)) {

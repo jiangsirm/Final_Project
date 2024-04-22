@@ -2,7 +2,7 @@ function Welcome() {
     // Kun 
     return(
         <div>
-            This is the Register Page.
+            This is the Welcome Page.
         </div>
     )
 }

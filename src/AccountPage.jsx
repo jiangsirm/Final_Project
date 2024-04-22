@@ -27,8 +27,12 @@ function AccountPage() {
         passwordValue: ''
     })
 
-    // states for display pending users 
+    // states for display pending accounts who wants to share password with you
     const [pendingState, setPendingState] = useState([])
+
+    // state for sharing password with other accounts
+    const [toShareState, setToShareState] = useState('')
+    const [shareMessageState, setShareMessageState] = useState('')
 
     // states for displaying "copied" for copying to clip
     const[clipMessageState, setClipMessageState] = useState({message: "", index: -1, shared: undefined})
@@ -51,7 +55,7 @@ function AccountPage() {
         setClipMessageState({message:"Copied!", index: index, shared: shared})
         setTimeout(() => {
             setClipMessageState({message: "", index: -1, shared: undefined});
-        }, 1000);
+        }, 2000);
     }
 
     // utility function for checking blank input
@@ -149,6 +153,66 @@ function AccountPage() {
             onSubmit(currentOwnerState)
         } catch(error) {
             setErrorMsgState(error.response.data);
+        }
+    }
+
+    // function for accept a pending request to share
+    async function onAccept(index) {
+        // console.log(currentOwnerState)
+        try {
+            const sharerName = currentOwnerState
+            const shareeName = pendingState[index]
+            await axios.put('/api/account/pending', {
+                sharer: sharerName,
+                sharee: shareeName,
+                action: 'remove'
+            })
+            await axios.put('/api/account/shared', {
+                sharer: sharerName,
+                sharee: shareeName,
+                action: 'add'
+            })
+            onSubmit(currentOwnerState)
+        } catch(error) {
+            setErrorMsgState(error.response.data);
+        }
+    }
+
+    // function for accept a pending request to share
+    async function onDecline(index) {
+        // console.log(currentOwnerState)
+        try {
+            const sharerName = currentOwnerState
+            const shareeName = pendingState[index]
+            await axios.put('/api/account/pending', {
+                sharer: sharerName,
+                sharee: shareeName,
+                action: 'remove'
+            })
+            onSubmit(currentOwnerState)
+        } catch(error) {
+            setErrorMsgState(error.response.data);
+        }
+    }
+
+    // function of sending share request to others
+    async function onSend() {
+        try {
+            const sharerName = toShareState;
+            const shareeName = currentOwnerState;
+            await axios.put('/api/account/pending', {
+                sharer: sharerName,
+                sharee: shareeName,
+                action: 'add'
+            })
+            onSubmit(currentOwnerState)
+            setToShareState('')
+            setShareMessageState('Request sent!')
+            setTimeout(() => {
+                setShareMessageState('')
+            }, 1000);
+        } catch(error) {
+            setErrorMsgState(error.response.data)
         }
     }
 
@@ -271,16 +335,35 @@ function AccountPage() {
         // console.log(event.target.value)
     }
 
-    // react component shoing all pending Sharers
+    // function to update field for entering account to share password with
+    function updateToShare(event) {
+        setToShareState(event.target.value.replace(/\s/g, ''));
+    }
+
+    // react component for sharing account with others
+    function shareRequest() {
+        return (
+            <div>
+                <label htmlFor="sharerAccountName">Account Name:</label>
+                <input id="sharerAccountName" value={toShareState} onInput={(event) => updateToShare(event)}></input>
+                <button onClick={() => onSend()}>Send Request</button>
+                <span>{shareMessageState}</span>
+            </div>
+        )
+    }
+
+    // react component showing all pending Sharers
     function pendingSharer() {
         let info = []
-        info.push(<div key={-1}>User</div>)
+        if (pendingState.length === 0) {
+            info.push(<div key={-1}>There is no pending request now!</div>)
+        }
         for(let i = 0; i < pendingState.length; i++) {
             info.push(
                 <div className="PendingSharerRowContainer" key={i}>
                     {pendingState[i] + " would like to share password"}
-                    <button onClick={() =>{}}>Accept</button>
-                    <button onClick={() =>{}}>Decline</button>
+                    <button onClick={() => onAccept(i)}>Accept</button>
+                    <button onClick={() => onDecline(i)}>Decline</button>
                 </div>
             )
         }
@@ -382,17 +465,24 @@ function AccountPage() {
             <>  
                 <div>Pending Request:</div>
                 {pendingSharer()}
-                <div>My Password:</div>
-                {myPassword()}
-                <div>Shared Password</div>
-                {sharedPassword()}
+                <div>Send Share Request:</div>
+                {shareRequest()}
                 <div>Add new Password: </div>
                 {passwordCreateBar()}
+                <div>My Password:</div>
+                {myPassword()}
+                <div>Shared Password:</div>
+                {sharedPassword()}
             </>
         )
     }
 
     useEffect(onStart, []);
+    useEffect(() => {
+        setTimeout(() => {
+            setErrorMsgState('');
+        }, 5000);
+    }, [errorMsgState])
 
     return (
         <div>
