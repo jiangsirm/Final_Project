@@ -73,7 +73,7 @@ function Login() {
                 {errorMsgState && <h1> {errorMsgState} </h1>}
                 <div>
                     <div>
-                        <label htmlFor='account'>Acconut:</label> <input id="account" value={accountState} onInput={(event) => updateAccount(event)}/>
+                        <label htmlFor='account'>Account:</label> <input id="account" value={accountState} onInput={(event) => updateAccount(event)}/>
                     </div>
                     <div>
                         <label htmlFor='password'>Password:</label> <input type={passwordVisibleState ? "text" : 'password'} id="password" value={passwordState} onInput={(event) => updatePassword(event)}/>
