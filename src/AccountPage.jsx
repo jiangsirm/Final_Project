@@ -389,7 +389,9 @@ function AccountPage() {
     // react component showing all shared passwords
     function sharedPassword() {
         let info = []
-        info.push(<div key={-1}>User: Name : Password: Created</div>)
+        info.push(<div className="columnTitle" key={-1}>
+        <span>Here stores shared passwords</span>
+    </div>)
         for (let i = 0; i < sharedPasswordState.length; i++) {
             const created = new Date(sharedPasswordState[i].created)
             info.push(
@@ -397,21 +399,37 @@ function AccountPage() {
                     {sharedPasswordState[i].ownerAccount + ": " +
                         sharedPasswordState[i].passwordName + ": "}
                     <input readOnly type={sharedVisibleState[i]} value={sharedPasswordState[i].passwordValue}></input>
-                    <button onClick={() => doHide(true, i)}>{sharedVisibleState[i] === "password" ? "Show" : "Hide"}</button>
+                    <button className = "visibale-btn" onClick={() => doHide(true, i)}>{sharedVisibleState[i] === "password" ? 
+                    (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off">
+                            <path d="M6 6L18 18M6 18L18 6" />
+                        </svg>
+
+                    ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                            <path d="M12 4C6.48 4 2 12 2 12s4.48 8 10 8 10-8 10-8-4.48-8-10-8zm0 13c-2.33 0-4.43-1.18-6-3 1.57-1.82 3.67-3 6-3s4.43 1.18 6 3c-1.57 1.82-3.67 3-6 3z" />
+                            <circle cx="12" cy="12" r="3" />
+                        </svg>
+                    )}</button>
                     {created.getDate().toString() + "/" +
                         (created.getMonth() + 1).toString() + "/" +
                         created.getFullYear().toString() + " " +
                         created.getHours().toString() + ":" +
                         created.getMinutes().toString() + ":" +
                         created.getSeconds().toString()}
-                    <button onClick={() => copyToClipBoard(true, i)}>Copy</button>
-                    {clipMessageState.index === i && clipMessageState.shared === true ? clipMessageState.message : ""}
+                    <button className="btn" onClick={() => copyToClipBoard(true, i)}>Copy</button>
+                   <div className="pop-out">
+                   {clipMessageState.index === i && clipMessageState.shared === true ? clipMessageState.message : ""}
+                   </div>
                 </div>
             )
         }
         return <div className="SharedPasswordContainer">
-            <h1 className="title">Shared Password:</h1>
-            {info}
+            <h1 className="columnTitle">Shared Password:</h1>
+            <div className="SharedPasswordContainer-inner">
+                {info}
+            </div>
+            
         </div>
     }
 
@@ -419,12 +437,14 @@ function AccountPage() {
     function editBar() {
         return (
             <div className="edit-bar-container">
-                Edit Bar:&nbsp;
-                <label htmlFor="passwordNameEdit">Password Name:</label>
-                <input id="passwordNameEdit" value={editContentState.passwordName} onInput={(event) => updateEditContent('passwordName', event)}></input>
-                <label htmlFor="passwordValueEdit">Password:</label>
-                <input id="passwordValueEdit" value={editContentState.passwordValue} onInput={(event) => updateEditContent('passwordValue', event)}></input>
-                <button onClick={() => onUpdate(editContentState.passwordId)}>Update</button>
+                <h1 className="title"> Edit Bar</h1>
+                <div className="edit-box">
+                    <label htmlFor="passwordNameEdit">AccountName:</label>
+                    <input id="passwordNameEdit" value={editContentState.passwordName} onInput={(event) => updateEditContent('passwordName', event)}></input>
+                    <label htmlFor="passwordValueEdit">Password:</label>
+                    <input id="passwordValueEdit" value={editContentState.passwordValue} onInput={(event) => updateEditContent('passwordValue', event)}></input>
+                    <button className="update-btn" onClick={() => onUpdate(editContentState.passwordId)}>Update</button>
+                </div>
             </div>
         )
     }
@@ -432,31 +452,51 @@ function AccountPage() {
     // react component showing all passwords of an account owner
     function myPassword() {
         let info = []
-        info.push(<div key={-1}>Name : Password: Created</div>)
+        info.push(<div className="columnTitle" key={-1}>
+            <span>Here stores your passwords</span>
+        </div>)
         for (let i = 0; i < passwordsState.length; i++) {
             const created = new Date(passwordsState[i].created)
             info.push(
-                <div className="PasswordRowContainer" key={i}>
-                    {passwordsState[i].passwordName + ": "}
-                    <input readOnly type={passwordVisibleState[i]} value={passwordsState[i].passwordValue}></input>
-                    <button onClick={() => doHide(false, i)}>{passwordVisibleState[i] === "password" ? "Show" : "Hide"}</button>
-                    {created.getDate().toString() + "/" +
-                        (created.getMonth() + 1).toString() + "/" +
-                        created.getFullYear().toString() + " " +
-                        created.getHours().toString() + ":" +
-                        created.getMinutes().toString() + ":" +
-                        created.getSeconds().toString()}
-                    <button onClick={() => copyToClipBoard(false, i)}>Copy</button>
-                    <button onClick={() => onDelete(passwordsState[i]._id)}>Delete</button>
-                    <button onClick={() => onEdit(passwordsState[i]._id, i)}>Edit</button>
-                    {clipMessageState.index === i && clipMessageState.shared === false ? clipMessageState.message : ""}
-                    {editState === i ? editBar() : ""}
-                </div>
+                <>
+                    <div className="PasswordRowContainer" key={i}>
+
+                        {passwordsState[i].passwordName + ": "}
+                        <input readOnly type={passwordVisibleState[i]} value={passwordsState[i].passwordValue}></input>
+                        <button className="visibale-btn" onClick={() => doHide(false, i)}>
+                            {passwordVisibleState[i] === "password" ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye-off">
+                                    <path d="M6 6L18 18M6 18L18 6" />
+                                </svg>
+
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                                    <path d="M12 4C6.48 4 2 12 2 12s4.48 8 10 8 10-8 10-8-4.48-8-10-8zm0 13c-2.33 0-4.43-1.18-6-3 1.57-1.82 3.67-3 6-3s4.43 1.18 6 3c-1.57 1.82-3.67 3-6 3z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+                            )}</button>
+                        {created.getDate().toString() + "/" +
+                            (created.getMonth() + 1).toString() + "/" +
+                            created.getFullYear().toString() + " " +
+                            created.getHours().toString() + ":" +
+                            created.getMinutes().toString() + ":" +
+                            created.getSeconds().toString()}
+                        <button className="btn" onClick={() => copyToClipBoard(false, i)}>Copy</button>
+                        <button className="btn" onClick={() => onDelete(passwordsState[i]._id)}>Delete</button>
+                        <button className="btn" onClick={() => onEdit(passwordsState[i]._id, i)}>Edit</button>
+                        <div className="pop-out">{clipMessageState.index === i && clipMessageState.shared === false ? clipMessageState.message : ""}</div>
+
+                    </div>
+                    <div>{editState === i ? editBar() : ""}</div>
+                </>
+
             )
         }
         return <div className="PasswordContainer">
-            <h1 className="title">My Password:</h1>
-            {info}
+            <h1 className="title">My Password</h1>
+            <div className="PasswordContainer-inner">
+                {info}
+            </div>
         </div>
     }
 
@@ -489,7 +529,7 @@ function AccountPage() {
                         <input type="number" id="passWordLength" value={passwordLengthState} onChange={updatePasswordLength} />
                     </div>
                 </div>
-                <button  className="submit-btn" onClick={() => onCreate()}>Create</button>
+                <button className="submit-btn" onClick={() => onCreate()}>Create</button>
             </div>
         )
     }
@@ -549,9 +589,9 @@ function AccountPage() {
     }
     return (
         <div className="accountPage-container">
-            <div>
-                <div>{errorMsgState}</div>
-            </div>
+            <div className="error-container">
+                    <h1 className='msg'>{errorMsgState}</h1>
+                </div>
             {infoBlock()}
         </div>
     )

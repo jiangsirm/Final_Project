@@ -9,34 +9,59 @@ function Welcome() {
                 <div className="welcome-container">
 
                     <div class="orbContainer">
-                        <Link to="/login">
-                            <div class="orb">
-                                <h1>Login</h1>
-                            </div>
-                        </Link>
+                        <div class="project-info">
+                            <h2>Password Manager App</h2>
+                            <h3>Fullstack Development</h3>
+                            <h4>Overview</h4>
+                            <p>
+                                As more and more companies experience hacks and cybersecurity becomes more important, there are many services that can generate and manage passwords on your behalf...
+                            </p>
+
+
+                        </div>
+
+                    </div>
+                    <div class="orbContainer">
+                        <div class="project-info">
+                            <h2>Password Manager App</h2>
+                            <h3>Fullstack Development</h3>
+                            <h4>Overview</h4>
+                            <p>
+                                As more and more companies experience hacks and cybersecurity becomes more important, there are many services that can generate and manage passwords on your behalf...
+                            </p>
+
+
+                        </div>
+
+                    </div>
+                    <div class="orbContainer">
+                        <div class="project-info">
+                            <h2>Password Manager App</h2>
+                            <h3>Fullstack Development</h3>
+                            <h4>Overview</h4>
+                            <p>
+                                As more and more companies experience hacks and cybersecurity becomes more important, there are many services that can generate and manage passwords on your behalf...
+                            </p>
+
+
+                        </div>
+
+                    </div>
+                    <div class="orbContainer">
+                        <div class="project-info">
+                            <h2>Password Manager App</h2>
+                            <h3>Fullstack Development</h3>
+                            <h4>Overview</h4>
+                            <p>
+                                As more and more companies experience hacks and cybersecurity becomes more important, there are many services that can generate and manage passwords on your behalf...
+                            </p>
+
+
+                        </div>
+
                     </div>
 
-                    <div class="orbContainer">
-                        <Link to="/register">
-                            <div class="orb two">
-                                <h1>Register</h1>
-                            </div>
-                        </Link>
-                    </div>
-                    <div class="orbContainer">
-                        <Link to="/account">
-                            <div class="orb three">
-                                <h1>MyAccount</h1>
-                            </div>
-                        </Link>
-                    </div>
-                    <div class="orbContainer">
-                        <Link to="/">
-                            <div class="orb">
-                                <h1>Home</h1>
-                            </div>
-                        </Link>
-                    </div>
+                  
 
 
                 </div>

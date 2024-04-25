@@ -48,3 +48,8 @@
     color: #ff0000; /* Set text color to red */
 }
 
+@media screen and (max-width: 768px) {
+    .ShareRequest-Container {
+        padding: 1rem; /* Adjust padding for smaller screens */
+    }
+}

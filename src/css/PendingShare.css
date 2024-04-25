@@ -1,6 +1,7 @@
 .PendingSharerContainer {
     position: relative;
     display: flex;
+    
     flex-direction: column;
     background-color: lightblue;
     opacity: 0.8;
@@ -9,9 +10,8 @@
     margin: 10px;
     align-items: center;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    
 }
-
-
 
 
 
@@ -26,8 +26,7 @@
 .PendingSharerContainerInner{
     background-color: rgba(256, 256, 256,0.3);
     border-radius: 20px; 
-    padding: 10px; 
-  
+    padding: 10px;  
 }
 
 
@@ -54,6 +53,20 @@
     opacity: 0.6;
     color: #fff;
 }
+
+
+/* Media queries for responsiveness */
+@media screen and (max-width: 768px) {
+    .PendingSharerContainer {
+        padding: 1rem; /* Adjust padding for smaller screens */
+    }
+    
+    .PendingSharerRowContainer {
+        flex-direction: column; /* Stack rows vertically on smaller screens */
+        align-items: center; /* Center align items on smaller screens */
+    }
+}
+
 
 
 

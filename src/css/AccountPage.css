@@ -9,3 +9,12 @@
     color: black;
     font-weight: 400;
 }
+
+.error-container{
+    text-align: center;
+}
+@media screen and (max-width: 768px) {
+    .accountPage-container {
+        padding-top: 40px; /* Adjust padding for smaller screens */
+    }
+}
