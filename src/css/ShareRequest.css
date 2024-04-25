@@ -1,0 +1,50 @@
+.ShareRequest-Container {
+    padding: 50px;
+    position: relative;
+    background-color: blanchedalmond;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 20px;
+}
+
+.ShareRequest-Container label {
+    margin-top: 20px;
+    display: block; /* Display the label as block to place it on its own line */
+    margin-bottom: 0px; /* Add some space below the label */
+}
+
+.ShareRequest-Container input {
+    border-radius: 30px;
+    margin-bottom: 20px; /* Add some space below the input */
+    padding: 5px; /* Add padding to the input */
+}
+
+.send-request-btn {
+    padding: 10px 20px;
+    /* Add padding */
+    background-color: lightgray;
+    color: #fff;
+    /* Button text color */
+    border: none;
+    /* Remove button border */
+    border-radius: 5px;
+    /* Add border radius */
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+    transition: background-color 0.3s;
+    /* Smooth background color transition */
+}
+
+.send-request-btn:hover {
+    background-color: #333; /* Darker background color on hover */
+}
+
+.ShareRequest-Container span {
+    display: block; /* Display the span as block to place it on its own line */
+    margin-top: 10px; /* Add some space above the span */
+    color: #ff0000; /* Set text color to red */
+}
+

@@ -1,27 +1,35 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router';
 import axios from 'axios'
-
+import "./css/AccountPage.css"
+import "./css/ShareRequest.css"
+import "./css/MyPassword.css"
+import "./css/PasswordCreateBar.css"
+import "./css/PendingShare.css"
+import "./css/SharedPassword.css"
+import "./css/MyPassword.css"
+import "./css/Info-Block.css"
+import "./css/EditBar.css"
 function AccountPage() {
     // states for currentOwner, password of the owner and the shared passwords
     const navigate = useNavigate()
-    const[passwordsState, setPasswordsState] = useState([]);
-    const[sharedPasswordState, setSharedPasswordState] = useState([]);
-    const[currentOwnerState, setCurrentOwnerState] = useState('');
+    const [passwordsState, setPasswordsState] = useState([]);
+    const [sharedPasswordState, setSharedPasswordState] = useState([]);
+    const [currentOwnerState, setCurrentOwnerState] = useState('');
 
     // states for inputs for password creation, check box, and password length
-    const[newPasswordNameState, setNewPasswordNameState] = useState('');
-    const[newPasswordValueState, setNewPasswordValueState] = useState('');
-    const[passwordLengthState, setPasswordLengthState] = useState(4)
-    const[checkBoxState, setCheckBoxState] = useState({alphabet:false, numerals:false, symbols:false})
+    const [newPasswordNameState, setNewPasswordNameState] = useState('');
+    const [newPasswordValueState, setNewPasswordValueState] = useState('');
+    const [passwordLengthState, setPasswordLengthState] = useState(4)
+    const [checkBoxState, setCheckBoxState] = useState({ alphabet: false, numerals: false, symbols: false })
 
     // states for visibility of passwords
-    const[passwordVisibleState, setPasswordVisibleState] = useState([])
-    const[sharedVisibleState, setSharedVisibleState] = useState([])
+    const [passwordVisibleState, setPasswordVisibleState] = useState([])
+    const [sharedVisibleState, setSharedVisibleState] = useState([])
 
     // states for editing existing password
-    const[editState, setEditState] = useState(-1)
-    const[editContentState, setEditContentState] = useState({
+    const [editState, setEditState] = useState(-1)
+    const [editContentState, setEditContentState] = useState({
         passwordId: '',
         passwordName: '',
         passwordValue: ''
@@ -35,10 +43,10 @@ function AccountPage() {
     const [shareMessageState, setShareMessageState] = useState('')
 
     // states for displaying "copied" for copying to clip
-    const[clipMessageState, setClipMessageState] = useState({message: "", index: -1, shared: undefined})
+    const [clipMessageState, setClipMessageState] = useState({ message: "", index: -1, shared: undefined })
 
     // states for error message
-    const[errorMsgState, setErrorMsgState] = useState('');
+    const [errorMsgState, setErrorMsgState] = useState('');
 
 
     //function for copy to clip board
@@ -49,12 +57,12 @@ function AccountPage() {
             } else {
                 navigator.clipboard.writeText(passwordsState[index].passwordValue)
             }
-        } catch(error) {
+        } catch (error) {
             console.log(error.message)
         }
-        setClipMessageState({message:"Copied!", index: index, shared: shared})
+        setClipMessageState({ message: "Copied!", index: index, shared: shared })
         setTimeout(() => {
-            setClipMessageState({message: "", index: -1, shared: undefined});
+            setClipMessageState({ message: "", index: -1, shared: undefined });
         }, 2000);
     }
 
@@ -66,13 +74,13 @@ function AccountPage() {
     // hide and show function for visibility
     // via changing the type of the input box as password or text
     function doHide(shared, index) {
-        if(shared) {
+        if (shared) {
             const arr = [...sharedVisibleState]
-            arr[index] = arr[index] === "password" ? "text": "password"
+            arr[index] = arr[index] === "password" ? "text" : "password"
             setSharedVisibleState(arr)
         } else {
             const arr = [...passwordVisibleState]
-            arr[index] = arr[index] === "password" ? "text": "password"
+            arr[index] = arr[index] === "password" ? "text" : "password"
             setPasswordVisibleState(arr)
         }
     }
@@ -96,13 +104,13 @@ function AccountPage() {
                 passwordName: newPasswordNameState.trim(),
                 passwordValue: newPasswordValueState.trim(),
                 requirements: checkBoxState,
-                length:passwordLengthState
+                length: passwordLengthState
             });
             setNewPasswordNameState('');
             setNewPasswordValueState('')
             onSubmit(currentOwnerState)
-        } catch(error) {
-            setErrorMsgState(error.response.data);
+        } catch (error) {
+            setErrorMsgState("Password Name Info already exists");
         }
     }
 
@@ -111,7 +119,7 @@ function AccountPage() {
         try {
             await axios.delete('/api/password/' + passwordId)
             onSubmit(currentOwnerState)
-        } catch(error) {
+        } catch (error) {
             setErrorMsgState(error.response.data);
         }
     }
@@ -121,14 +129,14 @@ function AccountPage() {
         // console.log(pendingState)
         if (editState !== -1 && editState === index) {
             setEditState(-1)
-            setEditContentState ({
+            setEditContentState({
                 passwordId: '',
                 passwordName: '',
                 passwordValue: ''
             })
         } else {
             setEditState(index)
-            setEditContentState ({
+            setEditContentState({
                 passwordId: passwordId,
                 passwordName: passwordsState[index].passwordName,
                 passwordValue: passwordsState[index].passwordValue
@@ -145,14 +153,14 @@ function AccountPage() {
                 passwordValue: editContentState.passwordValue
             })
             setEditState(-1)
-            setEditContentState ({
+            setEditContentState({
                 passwordId: '',
                 passwordName: '',
                 passwordValue: ''
             })
             onSubmit(currentOwnerState)
-        } catch(error) {
-            setErrorMsgState(error.response.data);
+        } catch (error) {
+            setErrorMsgState("Password Name already exists");
         }
     }
 
@@ -173,7 +181,7 @@ function AccountPage() {
                 action: 'add'
             })
             onSubmit(currentOwnerState)
-        } catch(error) {
+        } catch (error) {
             setErrorMsgState(error.response.data);
         }
     }
@@ -190,7 +198,7 @@ function AccountPage() {
                 action: 'remove'
             })
             onSubmit(currentOwnerState)
-        } catch(error) {
+        } catch (error) {
             setErrorMsgState(error.response.data);
         }
     }
@@ -211,7 +219,7 @@ function AccountPage() {
             setTimeout(() => {
                 setShareMessageState('')
             }, 1000);
-        } catch(error) {
+        } catch (error) {
             setErrorMsgState(error.response.data)
         }
     }
@@ -242,11 +250,13 @@ function AccountPage() {
     // function used together with above function to log in
     async function isLoggedIn() {
         try {
-          const response = await axios.get('/api/account/loggedIn');
-          const ownerAccount = response.data.ownerAccount;
-          setCurrentOwnerState(ownerAccount);
+            const response = await axios.get('/api/account/loggedIn');
+            const ownerAccount = response.data.ownerAccount;
+            setCurrentOwnerState(ownerAccount);
         } catch (e) {
-          navigate('/')
+            setTimeout(() => {
+                navigate('/login');
+            }, 1000); // 1000 milliseconds = 1 secondnavigate('/login')
         }
     }
 
@@ -256,8 +266,8 @@ function AccountPage() {
             const response = await axios.get("api/account/" + currentOwnerState)
             // console.log(response.data.pendingSharee)
             setPendingState([...response.data.pendingSharee])
-            
-        } catch(error) {
+
+        } catch (error) {
             setErrorMsgState(error.message)
         }
     }
@@ -275,7 +285,7 @@ function AccountPage() {
 
             setSharedPasswordState(result);
             setSharedVisibleState(new Array(result.length).fill("password"))
-        } catch(error) {
+        } catch (error) {
             setSharedPasswordState([])
             setErrorMsgState("When retriving shared account: " + error.message);
         }
@@ -288,7 +298,7 @@ function AccountPage() {
             // setCurrentOwnerState(ownerAccount);
             setPasswordsState(myPassword.data);
             setPasswordVisibleState(new Array(myPassword.data.length).fill("password"))
-        } catch(error) {
+        } catch (error) {
             setErrorMsgState(error.response.data);
         }
     }
@@ -302,12 +312,12 @@ function AccountPage() {
     function updateNewPasswordValue(event) {
         setNewPasswordValueState(event.target.value.replace(/\s/g, ''));
     }
-    
+
     // function for updating checkBox
     function updateCheckBox(fieldName, event) {
         setCheckBoxState({
             ...checkBoxState,
-            [fieldName]:event.target.checked
+            [fieldName]: event.target.checked
         })
         // console.log(event.target.checked)
     }
@@ -330,7 +340,7 @@ function AccountPage() {
     function updateEditContent(fieldName, event) {
         setEditContentState({
             ...editContentState,
-            [fieldName]:event.target.value
+            [fieldName]: event.target.value
         })
         // console.log(event.target.value)
     }
@@ -343,10 +353,11 @@ function AccountPage() {
     // react component for sharing account with others
     function shareRequest() {
         return (
-            <div>
+            <div className="ShareRequest-Container">
+                <h1 className="title">Send Share Request</h1>
                 <label htmlFor="sharerAccountName">Account Name:</label>
                 <input id="sharerAccountName" value={toShareState} onInput={(event) => updateToShare(event)}></input>
-                <button onClick={() => onSend()}>Send Request</button>
+                <button className="send-request-btn" onClick={() => onSend()}>Send Request</button>
                 <span>{shareMessageState}</span>
             </div>
         )
@@ -358,7 +369,7 @@ function AccountPage() {
         if (pendingState.length === 0) {
             info.push(<div key={-1}>There is no pending request now!</div>)
         }
-        for(let i = 0; i < pendingState.length; i++) {
+        for (let i = 0; i < pendingState.length; i++) {
             info.push(
                 <div className="PendingSharerRowContainer" key={i}>
                     {pendingState[i] + " would like to share password"}
@@ -367,42 +378,50 @@ function AccountPage() {
                 </div>
             )
         }
-        return <div className="PendingSharerContainer">{info}</div>
+        return <div className="PendingSharerContainer">
+            <h1>Pending Request: </h1>
+            <div className="PendingSharerContainerInner">
+                {info}
+            </div>
+        </div>
     }
 
     // react component showing all shared passwords
     function sharedPassword() {
         let info = []
         info.push(<div key={-1}>User: Name : Password: Created</div>)
-        for(let i = 0; i < sharedPasswordState.length; i++) {
+        for (let i = 0; i < sharedPasswordState.length; i++) {
             const created = new Date(sharedPasswordState[i].created)
             info.push(
                 <div className="SharedPasswordRowContainer" key={i}>
-                    {sharedPasswordState[i].ownerAccount + ": " + 
-                    sharedPasswordState[i].passwordName + ": "} 
+                    {sharedPasswordState[i].ownerAccount + ": " +
+                        sharedPasswordState[i].passwordName + ": "}
                     <input readOnly type={sharedVisibleState[i]} value={sharedPasswordState[i].passwordValue}></input>
-                    <button onClick={() => doHide(true, i)}>{sharedVisibleState[i] === "password"? "Show": "Hide"}</button>
+                    <button onClick={() => doHide(true, i)}>{sharedVisibleState[i] === "password" ? "Show" : "Hide"}</button>
                     {created.getDate().toString() + "/" +
-                    (created.getMonth() + 1).toString() + "/" +
-                    created.getFullYear().toString() + " " +
-                    created.getHours().toString()+ ":" +
-                    created.getMinutes().toString()+ ":" +
-                    created.getSeconds().toString()}
+                        (created.getMonth() + 1).toString() + "/" +
+                        created.getFullYear().toString() + " " +
+                        created.getHours().toString() + ":" +
+                        created.getMinutes().toString() + ":" +
+                        created.getSeconds().toString()}
                     <button onClick={() => copyToClipBoard(true, i)}>Copy</button>
-                    {clipMessageState.index === i && clipMessageState.shared === true ? clipMessageState.message: ""}
+                    {clipMessageState.index === i && clipMessageState.shared === true ? clipMessageState.message : ""}
                 </div>
             )
         }
-        return <div className="SharedPasswordContainer">{info}</div>
+        return <div className="SharedPasswordContainer">
+            <h1 className="title">Shared Password:</h1>
+            {info}
+        </div>
     }
 
     // react component for edit tool bar
     function editBar() {
         return (
-            <div>
+            <div className="edit-bar-container">
                 Edit Bar:&nbsp;
                 <label htmlFor="passwordNameEdit">Password Name:</label>
-                <input id="passwordNameEdit" value={editContentState.passwordName} onInput={(event) => updateEditContent('passwordName',event)}></input>
+                <input id="passwordNameEdit" value={editContentState.passwordName} onInput={(event) => updateEditContent('passwordName', event)}></input>
                 <label htmlFor="passwordValueEdit">Password:</label>
                 <input id="passwordValueEdit" value={editContentState.passwordValue} onInput={(event) => updateEditContent('passwordValue', event)}></input>
                 <button onClick={() => onUpdate(editContentState.passwordId)}>Update</button>
@@ -414,47 +433,63 @@ function AccountPage() {
     function myPassword() {
         let info = []
         info.push(<div key={-1}>Name : Password: Created</div>)
-        for(let i = 0; i < passwordsState.length; i++) {
+        for (let i = 0; i < passwordsState.length; i++) {
             const created = new Date(passwordsState[i].created)
             info.push(
                 <div className="PasswordRowContainer" key={i}>
-                    {passwordsState[i].passwordName + ": "} 
+                    {passwordsState[i].passwordName + ": "}
                     <input readOnly type={passwordVisibleState[i]} value={passwordsState[i].passwordValue}></input>
-                    <button onClick={() => doHide(false, i)}>{passwordVisibleState[i] === "password"? "Show": "Hide"}</button>
+                    <button onClick={() => doHide(false, i)}>{passwordVisibleState[i] === "password" ? "Show" : "Hide"}</button>
                     {created.getDate().toString() + "/" +
-                    (created.getMonth() + 1).toString() + "/" +
-                    created.getFullYear().toString() + " " +
-                    created.getHours().toString()+ ":" +
-                    created.getMinutes().toString()+ ":" +
-                    created.getSeconds().toString()}
+                        (created.getMonth() + 1).toString() + "/" +
+                        created.getFullYear().toString() + " " +
+                        created.getHours().toString() + ":" +
+                        created.getMinutes().toString() + ":" +
+                        created.getSeconds().toString()}
                     <button onClick={() => copyToClipBoard(false, i)}>Copy</button>
                     <button onClick={() => onDelete(passwordsState[i]._id)}>Delete</button>
                     <button onClick={() => onEdit(passwordsState[i]._id, i)}>Edit</button>
-                    {clipMessageState.index === i && clipMessageState.shared === false ? clipMessageState.message: ""}
-                    {editState === i ? editBar(): ""}                   
+                    {clipMessageState.index === i && clipMessageState.shared === false ? clipMessageState.message : ""}
+                    {editState === i ? editBar() : ""}
                 </div>
             )
         }
-        return <div className="PasswordContainer">{info}</div>
+        return <div className="PasswordContainer">
+            <h1 className="title">My Password:</h1>
+            {info}
+        </div>
     }
 
     // component for password creation bar 
     function passwordCreateBar() {
         return (
             <div className="passWordCreationToolBar">
-                <label htmlFor="passwordName">Password Name:</label>
-                <input id="passwordName" value={newPasswordNameState} onInput={(event) => updateNewPasswordName(event)}></input>
-                <label htmlFor="passwordValue">Password:</label>
-                <input id="passwordValue" value={newPasswordValueState} onInput={(event) => updateNewPasswordValue(event)}></input>
-                <button onClick={() => onCreate()}>Create</button>
-                <label htmlFor="alphabet">alphabet</label>
-                <input type="checkbox" id="alphabet" value={checkBoxState.alphabet} onChange={(event) => updateCheckBox("alphabet", event)}></input>
-                <label htmlFor="numeral">numeral</label>
-                <input type="checkbox" id="numeral" value={checkBoxState.numerals} onInput={(event) => updateCheckBox("numerals", event)}></input>
-                <label htmlFor="symbol">symbol</label>
-                <input type="checkbox" id="symbol" value={checkBoxState.symbols} onInput={(event) => updateCheckBox("symbols", event)}></input>
-                <label htmlFor="passWordLength">length</label>
-                <input type="number" id="passWordLength" value={passwordLengthState} onChange={updatePasswordLength}></input>
+                <h1 className="title">Add new Password </h1>
+                <div className='tool-box'>
+                    <label htmlFor="passwordName">Password Name:</label>
+                    <input id="passwordName" value={newPasswordNameState} onInput={(event) => updateNewPasswordName(event)}></input>
+                    <label htmlFor="passwordValue">Password:</label>
+                    <input id="passwordValue" value={newPasswordValueState} onInput={(event) => updateNewPasswordValue(event)}></input>
+                </div>
+                <div className="options-list">
+                    <div className="option-item">
+                        <label htmlFor="alphabet">alphabet</label>
+                        <input type="checkbox" id="alphabet" value={checkBoxState.alphabet} onChange={(event) => updateCheckBox("alphabet", event)} />
+                    </div>
+                    <div className="option-item">
+                        <label htmlFor="numeral">numeral</label>
+                        <input type="checkbox" id="numeral" value={checkBoxState.numerals} onChange={(event) => updateCheckBox("numerals", event)} />
+                    </div>
+                    <div className="option-item">
+                        <label htmlFor="symbol"> symbol </label>
+                        <input type="checkbox" id="symbol" value={checkBoxState.symbols} onChange={(event) => updateCheckBox("symbols", event)} />
+                    </div>
+                    <div className="option-item">
+                        <label htmlFor="passWordLength">length</label>
+                        <input type="number" id="passWordLength" value={passwordLengthState} onChange={updatePasswordLength} />
+                    </div>
+                </div>
+                <button  className="submit-btn" onClick={() => onCreate()}>Create</button>
             </div>
         )
     }
@@ -462,17 +497,30 @@ function AccountPage() {
     // component for integrated block
     function infoBlock() {
         return (
-            <>  
-                <div>Pending Request:</div>
-                {pendingSharer()}
-                <div>Send Share Request:</div>
-                {shareRequest()}
-                <div>Add new Password: </div>
-                {passwordCreateBar()}
-                <div>My Password:</div>
-                {myPassword()}
-                <div>Shared Password:</div>
-                {sharedPassword()}
+            <>
+                <div className="info-Block">
+                    <div className="container-main">
+
+                        <div className="top">{pendingSharer()}</div>
+
+                        <div className="middle">
+                            <div className="left">
+                                {shareRequest()}
+                            </div>
+                            <div className="right">
+                                {passwordCreateBar()}
+                            </div>
+
+                        </div>
+
+                        <div className="bottom">
+                            {myPassword()}
+                        </div>
+                        <div className="end">
+                            {sharedPassword()}
+                        </div>
+                    </div>
+                </div>
             </>
         )
     }
@@ -484,8 +532,23 @@ function AccountPage() {
         }, 5000);
     }, [errorMsgState])
 
+    if (!currentOwnerState) {
+        return (
+            <div className="login-container">
+                <div className="loading-container">
+                    <div>
+                        You are not loged In
+                    </div>
+                    <div>
+                        Redireact to Login Page....
+                    </div>
+
+                </div>
+            </div>
+        )
+    }
     return (
-        <div>
+        <div className="accountPage-container">
             <div>
                 <div>{errorMsgState}</div>
             </div>

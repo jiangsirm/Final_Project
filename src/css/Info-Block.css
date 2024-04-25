@@ -1,0 +1,98 @@
+.info-Block{
+    position: relative;
+    border-style: solid; /* Set border style to solid */
+    border-width: 4px; /* Set border width to make it thick */
+    border-color: black; 
+    display: flex;
+    align-content: center;
+    justify-content: center;  
+    padding: 10px;  
+}
+
+.top{
+    grid-area: top;
+    display: flex;
+    justify-content: center;
+    background-color: #f0f0f0; 
+    border-radius: 20px; 
+}
+
+
+
+.middle{
+    grid-area: middle;
+    padding: 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch; /* Ensures both boxes have the same height */
+    gap: 30px;
+}
+
+.bottom{
+    grid-area: bottom;
+}
+
+.end{
+    grid-area: end;
+}
+
+.container-main{
+    border-style: solid; /* Set border style to solid */
+
+    border-color: red;
+    display: grid;  
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows:auto;
+    grid-template-areas:
+    "top top"
+    "middle middle"
+    "bottom bottom"
+    "end end";
+}
+
+
+.left,
+.right {
+    flex: 1; /* Makes both boxes grow to fill available space */
+    background-color: #f0f0f0; /* Example background color */
+    padding: 2rem; /* Adjust padding as needed */
+    border-radius: 10px; /* Example border radius */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Example box shadow */
+    transition: box-shadow 0.3s ease; /* Smooth transition for box shadow */
+}
+
+
+/* Hover effect for the boxes */
+.left:hover,
+.right:hover, .bottom:hover{
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* Increase shadow on hover */
+    cursor: pointer;
+}
+
+
+.bottom{
+  
+    background-color: lavenderblush; /* Example background color */
+    padding: 1rem; /* Adjust padding as needed */
+    border-radius: 20px; /* Example border radius */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Example box shadow */
+    transition: box-shadow 0.3s ease; /* Smooth transition for box shadow */
+
+    margin: 50px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.end{
+    background-color: lightsalmon; /* Example background color */
+    padding: 2rem; /* Adjust padding as needed */
+    border-radius: 20px; /* Example border radius */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Example box shadow */
+    transition: box-shadow 0.3s ease; /* Smooth transition for box shadow */
+    margin: 50px;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+
+

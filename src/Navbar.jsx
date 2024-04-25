@@ -4,9 +4,11 @@ import axios from "axios"
 import { useNavigate } from 'react-router';
 import { LogInContext } from './LoginProvider';
 
+import "./css/NavBar.css";
+
 function NavBar() {
-    const {login, setLoginTrue, setLoginFalse, setNavAccountState, resetAccountState} = useContext(LogInContext)
-    
+    const { login, setLoginTrue, setLoginFalse, setNavAccountState, resetAccountState } = useContext(LogInContext)
+
     const navigate = useNavigate()
 
     async function logginOut() {
@@ -15,21 +17,60 @@ function NavBar() {
             setLoginFalse()
             resetAccountState()
             navigate('/login')
-        } catch(error) {
+        } catch (error) {
             navigate('/welcome')
             console.log(e.message)
         }
     }
-    
+
     function NavBarContent() {
         if (login.loginState) {
-            return <span>{"Hello " + login.accountState + " !"}<button onClick={() => logginOut()}>Logout</button></span>
+            return (
+                <>
+                    <div className="top-container">
+                        <header class="top-header">
+                            <nav className="navbar">
+                                <ul className="navbar-nav">
+                                    <li className="nav-item">
+                                        <button className="nav-link" onClick={() => navigate('/')}>Home</button>
+                                    </li>
+                                    <li className="nav-item">
+                                        <button className="nav-link" >{"Logedin as: " + login.accountState}</button>
+                                    </li>
+                                    <li className="nav-item">
+                                        <button  className="nav-link"  onClick={() => logginOut()}>Logout</button>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </header>
+                    </div>
+                   
+                </>
+            )
+
         } else {
             return (
-                <span>
-                    <button onClick={() => navigate('/login')}>Login</button>
-                    <button onClick={() => navigate('/register')}>Register</button>
-                </span>
+                <div className="top-container">
+                    <header class="top-header">
+                        <nav className="navbar">
+                            <ul className="navbar-nav">
+                                <li className="nav-item">
+                                    <button className="nav-link" onClick={() => navigate('/')}>Home</button>
+                                </li>
+                                <li className="nav-item">
+                                    <button className="nav-link" onClick={() => navigate('/account')}>MyAccount</button>
+                                </li>
+                                <li className="nav-item">
+                                    <button className="nav-link" onClick={() => navigate('/login')}>Login</button>
+                                </li>
+                                <li className="nav-item">
+                                    <button className="nav-link" onClick={() => navigate('/register')}>Register</button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </header>
+                </div>
+
             )
         }
     }
@@ -37,13 +78,14 @@ function NavBar() {
     return (
         <>
             <div>
-                Here should be a NavBar &nbsp;
                 {NavBarContent()}
             </div>
-            <Outlet/>
+            <Outlet />
         </>
 
     )
 }
 
 export default NavBar
+
+

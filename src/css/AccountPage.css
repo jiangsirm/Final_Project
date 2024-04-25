@@ -1,0 +1,11 @@
+.accountPage-container{
+    padding-top: 80px; /* Add padding to the top of the content to avoid being obscured by the header */
+    background-color: lightgray;
+    
+}
+
+.title{
+    font-size: larger;
+    color: black;
+    font-weight: 400;
+}

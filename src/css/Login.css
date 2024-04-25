@@ -1,0 +1,151 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #e2e2e2;
+}
+
+.error-container {
+    position: relative;
+    border-radius: 10px;
+    box-shadow: 0 0 100px red;
+}
+
+.msg{
+    font-size: 18px;
+    color: red;
+    opacity: 0.7;
+}
+
+
+.login-box {
+    background-color: white;
+    opacity: 0.9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.4);
+}
+
+.login-box h1 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+}
+
+.account-container {
+    display: flex;
+    align-items: center;
+    padding-top: 30px
+}
+
+.account-container label {
+    font-size: 20px;
+    color: #333;
+    font-weight: 700;
+    margin-right: 10px;
+    /* Adjust spacing between label and input */
+    line-height: 24px;
+}
+
+.password-container {
+    display: flex;
+    align-items: center;
+    padding-bottom: 30px;
+    padding-top: 10px;
+}
+
+.password-container label {
+    font-size: 20px;
+    color: #333;
+    font-weight: 700;
+    margin-right: 10px;
+    /* Adjust spacing between label and input */
+    line-height: 24px;
+    /* Set line height to match input field */
+
+}
+
+#account {
+    width: 100%;
+    height: 24px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+#account :focus {
+    border-color: red;
+}
+
+#password {
+    width: 100%;
+    height: 24px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+
+.visibility-btn {
+    padding: 0;
+    /* Remove padding */
+    background-color: wheat;
+    /* Remove background color */
+    opacity: 0.7;
+    display: flex;
+    justify-content: center;
+
+    border-radius: 50px;
+    cursor: pointer;
+
+}
+
+.visibility-btn svg {
+    width: 16px;
+    /* Adjust icon size as needed */
+    height: 16px;
+}
+
+.visibility-btn:hover {
+    background-color: #333;
+    opacity: 0.8;
+}
+
+.sumbit-container {
+    display: flex;
+    justify-content: center;
+    /* Center horizontally */
+    align-items: flex-end;
+    /* Align to the bottom */
+    margin-top: auto;
+    /* Push to the bottom */
+}
+
+
+.submit-btn {
+    padding: 10px 20px;
+    /* Add padding */
+    background-color: lightgray;
+    color: #fff;
+    /* Button text color */
+    border: none;
+    /* Remove button border */
+    border-radius: 5px;
+    /* Add border radius */
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+    transition: background-color 0.3s;
+    /* Smooth background color transition */
+}
+
+.submit-btn:hover {
+    background-color: #333;
+    /* Darker background color on hover */
+}

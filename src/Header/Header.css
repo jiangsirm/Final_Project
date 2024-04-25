@@ -1,0 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@900&display=swap');
+
+body {
+    background-color: lightgray;
+}
+
+.containerHome {
+    /* hide fixed overflow contents */
+    clip: rect(0, auto, auto, 0);
+    /* does not work if overflow = visible */
+    overflow: hidden;
+    position: absolute;
+
+    height: 100vh;
+    left: 0;
+    width: 100%;
+    /* only for sofari */
+    -webkit-mask-image: -webkit-linear-gradient(top, #ffffff 0%, #ffffff 100%);
+}
+
+.container {
+    /* hide fixed overflow contents */
+    clip: rect(0, auto, auto, 0);
+    /* does not work if overflow = visible */
+    overflow: hidden;
+    position: absolute;
+    height: 100vh;
+    left: 0;
+    width: 100%;
+    /* only for sofari */
+    -webkit-mask-image: -webkit-linear-gradient(top, #ffffff 0%, #ffffff 100%);
+}
+
+
+.container_solid {
+    background-color: #e2e2e2;
+    opacity: 0.6;
+    /* position this container at the top of its parent element */
+    top: 0;
+}
+
+.title_wrapper {
+    position: fixed;
+    display: block;
+    margin: auto;
+    width: 100%;
+    /* center the text wrapper vertically */
+    top: 50%;
+    /* center an element within its parent container. */
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.title_wrapper h1 {
+    text-align: center;
+    font-size: 96px;
+    text-transform: uppercase;
+    text-align: center;
+    font-family: 'Fraunces', serif;
+    font-weight: 96;
+}
+
+.title_wrapper h2 {
+    text-align: center;
+    font-size: 36px;
+    text-transform: uppercase;
+    text-align: center;
+   
+    font-weight: 36;
+}
+
+.container_solid .title_wrapper h1 {
+    /* the text background */
+    background: url(https://images.unsplash.com/photo-1575058752200-a9d6c0f41945?&q=85);
+    background-size: 100vw auto;
+    background-position: center;
+
+    /* clip the text is possible */
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+
+    /* fallback text color */
+    color: black;
+}
+
+.container_solid .title_wrapper h2 {
+    /* the text background */
+    background: url(https://images.unsplash.com/photo-1575058752200-a9d6c0f41945?&q=85);
+    background-size: 100vw auto;
+    background-position: center;
+
+    /* clip the text is possible */
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    /* fallback text color */
+    color: black;
+}
+
+.container_image {
+    /* Grab a free image from unsplash */
+    background-image: url(https://images.unsplash.com/photo-1575058752200-a9d6c0f41945?&q=85);
+    background-size: 100vw auto;
+    background-position: center;
+    background-attachment: fixed;
+    /* position the second container below the first container */
+    top: 100vh;
+}
+
+.container_image .title_wrapper h1 {
+    color: whitesmoke;
+}
+
+.container_image .title_wrapper h2 {
+    color: bisque;
+}
+
+section {
+    min-height: 100vh;
+    padding: 1em;
+    margin: auto;
+    max-width: 800px;
+}
+
+@media (max-width: 800px) {
+    section {
+        max-width: 100%;
+        /* Adjusts the maximum width to fit the viewport */
+    }
+}
+
+section h2 {
+    font-family: 'Fraunces', serif;
+    font-size: xx-large;
+}
+
+section p {
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: large;
+}
+.cover {
+    height: 200vh;
+}
+
+
+
+
+
+
+
